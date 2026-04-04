@@ -16,11 +16,12 @@ export function Header() {
         <div className="flex items-center gap-6">
           {!isHome && (
             <Link href="/" className="flex items-center space-x-2">
-              <div className="relative h-6 w-32">
+              <div className="relative h-8 w-44">
                 <Image
                   src="/images/esportsamaze_long_default.png"
                   alt="EsportsAmaze"
                   fill
+                  unoptimized
                   className="object-contain dark:hidden"
                   priority
                 />
@@ -28,6 +29,7 @@ export function Header() {
                   src="/images/esportsamaze_long_white.png"
                   alt="EsportsAmaze"
                   fill
+                  unoptimized
                   className="hidden object-contain dark:block"
                   priority
                 />

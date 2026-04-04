@@ -28,35 +28,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             
             <footer className="border-t border-neutral-200 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-950/50">
               {/* Sub-footer Navigation */}
-              <div className="container mx-auto px-4 py-8 md:px-8">
-                <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-                  <div className="flex flex-col space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">Games</h4>
-                    <Link href="/games" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">All Titles</Link>
-                    <Link href="/games/pubg-mobile" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">PUBG Mobile</Link>
-                    <Link href="/games/valorant" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Valorant</Link>
-                  </div>
-                  <div className="flex flex-col space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">Tournaments</h4>
-                    <Link href="/tournaments" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Ongoing</Link>
-                    <Link href="/tournaments/upcoming" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Upcoming</Link>
-                    <Link href="/tournaments/results" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Results</Link>
-                  </div>
-                  <div className="flex flex-col space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">Teams</h4>
-                    <Link href="/teams" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Pro Teams</Link>
-                    <Link href="/teams/rankings" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Rankings</Link>
-                  </div>
-                  <div className="flex flex-col space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">Players</h4>
-                    <Link href="/players" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Pro Players</Link>
-                    <Link href="/players/transfers" className="text-sm text-neutral-600 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400">Transfers</Link>
-                  </div>
+              <div className="w-full border-b border-neutral-200 dark:border-neutral-800">
+                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-neutral-200 dark:divide-neutral-800">
+                  <Link href="/games" className="flex h-20 items-center justify-center bg-white text-sm font-bold uppercase tracking-wider text-neutral-900 transition-all hover:bg-blue-600 hover:text-white dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-500">
+                    Games
+                  </Link>
+                  <Link href="/tournaments" className="flex h-20 items-center justify-center bg-white text-sm font-bold uppercase tracking-wider text-neutral-900 transition-all hover:bg-blue-600 hover:text-white dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-500">
+                    Tournaments
+                  </Link>
+                  <Link href="/teams" className="flex h-20 items-center justify-center bg-white text-sm font-bold uppercase tracking-wider text-neutral-900 transition-all hover:bg-blue-600 hover:text-white dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-500">
+                    Teams
+                  </Link>
+                  <Link href="/players" className="flex h-20 items-center justify-center bg-white text-sm font-bold uppercase tracking-wider text-neutral-900 transition-all hover:bg-blue-600 hover:text-white dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-500">
+                    Players
+                  </Link>
                 </div>
               </div>
 
               {/* Main Footer */}
-              <div className="border-t border-neutral-200 py-6 dark:border-neutral-800">
+              <div className="py-6">
                 <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 md:flex-row md:px-8">
                   <div className="flex items-center">
                     <div className="relative h-6 w-32">
@@ -64,13 +54,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         src="/images/esportsamaze_long_default.png"
                         alt="EsportsAmaze"
                         fill
-                        className="object-contain dark:hidden opacity-60 hover:opacity-100 transition-opacity"
+                        unoptimized
+                        className="object-contain dark:hidden"
                       />
                       <Image
                         src="/images/esportsamaze_long_white.png"
                         alt="EsportsAmaze"
                         fill
-                        className="hidden object-contain dark:block opacity-60 hover:opacity-100 transition-opacity"
+                        unoptimized
+                        className="hidden object-contain dark:block"
                       />
                     </div>
                   </div>

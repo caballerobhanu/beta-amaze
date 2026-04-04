@@ -13,14 +13,8 @@ export default function Home() {
             src="/images/esportsamaze_long_default.png"
             alt="EsportsAmaze"
             fill
-            className="object-contain dark:hidden"
-            priority
-          />
-          <Image
-            src="/images/esportsamaze_long_white.png"
-            alt="EsportsAmaze"
-            fill
-            className="hidden object-contain dark:block"
+            unoptimized
+            className="object-contain"
             priority
           />
         </div>
