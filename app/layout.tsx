@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import Link from 'next/link';
 import Image from 'next/image';
+import { logoDefault, logoWhite } from '@/lib/logos';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
@@ -51,14 +52,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <div className="flex items-center">
                     <div className="relative h-8 w-44">
                       <Image
-                        src="/images/esportsamaze_long_default.png"
+                        src={logoDefault}
                         alt="EsportsAmaze"
                         fill
                         unoptimized
                         className="object-contain dark:hidden"
                       />
                       <Image
-                        src="/images/esportsamaze_long_white.png"
+                        src={logoWhite}
                         alt="EsportsAmaze"
                         fill
                         unoptimized
