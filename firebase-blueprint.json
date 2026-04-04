@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user profile in the application.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "photoURL": { "type": "string", "description": "The user's profile picture URL." },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "The user's role." },
+        "createdAt": { "type": "timestamp", "description": "When the user profile was created." }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "Organization": {
+      "title": "Organization",
+      "description": "An esports organization that owns multiple teams.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the organization (e.g., S8UL)." },
+        "slug": { "type": "string", "description": "URL-friendly unique slug." },
+        "logo": { "type": "string", "description": "Organization's primary logo." },
+        "description": { "type": "string", "description": "About the organization." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp." }
+      },
+      "required": ["name", "slug", "createdAt", "updatedAt"]
+    },
+    "Game": {
+      "title": "Game",
+      "description": "An esports game title.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the game." },
+        "slug": { "type": "string", "description": "URL-friendly slug for the game." },
+        "parentGameId": { "type": "string", "description": "ID of the parent game if this is a regional variant (e.g., BGMI -> PUBGM)." },
+        "description": { "type": "string", "description": "Description of the game." },
+        "logoLight": { "type": "string", "description": "Light mode logo URL." },
+        "logoDark": { "type": "string", "description": "Dark mode logo URL." },
+        "coverImage": { "type": "string", "description": "URL to the game's cover image." },
+        "developer": { "type": "string", "description": "The developer of the game." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp." }
+      },
+      "required": ["name", "slug", "createdAt", "updatedAt"]
+    },
+    "Series": {
+      "title": "Series",
+      "description": "A recurring tournament series (e.g., PMGC).",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the series." },
+        "slug": { "type": "string", "description": "URL-friendly unique slug." },
+        "gameId": { "type": "string", "description": "Primary game for this series." },
+        "description": { "type": "string", "description": "Series description." },
+        "logo": { "type": "string", "description": "Series logo." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp." }
+      },
+      "required": ["name", "slug", "gameId", "createdAt", "updatedAt"]
+    },
+    "Tournament": {
+      "title": "Tournament",
+      "description": "An esports tournament or specific stage/qualifier.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the tournament." },
+        "slug": { "type": "string", "description": "URL-friendly slug." },
+        "seriesId": { "type": "string", "description": "Optional ID of the parent series." },
+        "parentTournamentId": { "type": "string", "description": "Optional ID of the parent tournament (if this is a qualifier/stage)." },
+        "gameIds": { "type": "array", "items": { "type": "string" }, "description": "Array of game IDs (supports cross-play like PUBGM + BGMI)." },
+        "status": { "type": "string", "enum": ["upcoming", "ongoing", "completed"], "description": "Tournament status." },
+        "tier": { "type": "string", "description": "Tournament tier (e.g., S-Tier, A-Tier)." },
+        "prizePool": { "type": "string", "description": "Prize pool amount." },
+        "region": { "type": "string", "description": "Region of the tournament." },
+        "startDate": { "type": "timestamp", "description": "Start date." },
+        "endDate": { "type": "timestamp", "description": "End date." },
+        "coverImage": { "type": "string", "description": "Cover image URL." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp." }
+      },
+      "required": ["name", "slug", "gameIds", "status", "createdAt", "updatedAt"]
+    },
+    "Team": {
+      "title": "Team",
+      "description": "An esports team (roster) for a specific game.",
+      "type": "object",
+      "properties": {
+        "organizationId": { "type": "string", "description": "Optional ID of the parent organization." },
+        "gameId": { "type": "string", "description": "ID of the game this roster plays." },
+        "name": { "type": "string", "description": "Base name of the team (e.g., Team SouL)." },
+        "displayName": { "type": "string", "description": "Sponsored/Current display name (e.g., iQOO SouL)." },
+        "slug": { "type": "string", "description": "URL-friendly unique slug." },
+        "logo": { "type": "string", "description": "Current team logo (can be sponsor specific)." },
+        "region": { "type": "string", "description": "Team region." },
+        "description": { "type": "string", "description": "Team description." },
+        "foundedYear": { "type": "number", "description": "Year the team was founded." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp." }
+      },
+      "required": ["name", "displayName", "slug", "gameId", "createdAt", "updatedAt"]
+    },
+    "Player": {
+      "title": "Player",
+      "description": "An esports player.",
+      "type": "object",
+      "properties": {
+        "handle": { "type": "string", "description": "Player's in-game name (e.g., Shadow)." },
+        "fullName": { "type": "string", "description": "Player's real name." },
+        "slug": { "type": "string", "description": "URL-friendly unique slug (e.g., shadow-bgmi-team1)." },
+        "teamId": { "type": "string", "description": "ID of the team the player belongs to." },
+        "gameId": { "type": "string", "description": "ID of the primary game the player plays." },
+        "role": { "type": "string", "description": "Player's role in the team." },
+        "country": { "type": "string", "description": "Player's country." },
+        "avatar": { "type": "string", "description": "Player's avatar URL." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp." }
+      },
+      "required": ["handle", "slug", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": { "$ref": "#/entities/User" }, "description": "Stores user profiles." },
+    "/organizations/{orgId}": { "schema": { "$ref": "#/entities/Organization" }, "description": "Stores parent organizations." },
+    "/games/{gameId}": { "schema": { "$ref": "#/entities/Game" }, "description": "Stores game titles and variants." },
+    "/series/{seriesId}": { "schema": { "$ref": "#/entities/Series" }, "description": "Stores tournament series." },
+    "/tournaments/{tournamentId}": { "schema": { "$ref": "#/entities/Tournament" }, "description": "Stores tournaments and stages." },
+    "/teams/{teamId}": { "schema": { "$ref": "#/entities/Team" }, "description": "Stores game-specific rosters." },
+    "/players/{playerId}": { "schema": { "$ref": "#/entities/Player" }, "description": "Stores individual players." }
+  }
+}

@@ -4,12 +4,33 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
-import { Search } from "lucide-react";
+import { Search, LogOut } from "lucide-react";
 import { logoDefault, logoWhite } from "@/lib/logos";
+import { useAuth } from "./firebase-provider";
+import { auth } from "@/lib/firebase";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const { user, isAuthReady } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Error signing in", error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-neutral-800 dark:bg-neutral-950/80 dark:supports-[backdrop-filter]:bg-neutral-950/60">
@@ -56,9 +77,35 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <button className="flex h-8 items-center justify-center rounded-full bg-blue-600 px-4 text-xs font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600">
-            Sign In
-          </button>
+          {isAuthReady && user ? (
+            <div className="flex items-center gap-3">
+              {user.photoURL && (
+                <Image
+                  src={user.photoURL}
+                  alt={user.displayName || "User"}
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                  unoptimized
+                  referrerPolicy="no-referrer"
+                />
+              )}
+              <button
+                onClick={handleSignOut}
+                className="flex h-8 items-center justify-center rounded-full bg-neutral-200 px-3 text-xs font-semibold text-neutral-700 transition-colors hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                title="Sign Out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={handleSignIn}
+              className="flex h-8 items-center justify-center rounded-full bg-blue-600 px-4 text-xs font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </header>

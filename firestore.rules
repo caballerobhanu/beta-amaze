@@ -1,0 +1,224 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // See firebase-blueprint.json for full schema details.
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.email == "caballero.bhanu@gmail.com" && request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+    
+    function isValidString(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+             request.resource.data[field].size() >= minLen &&
+             request.resource.data[field].size() <= maxLen;
+    }
+    
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !(field in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+    
+    function isValidEmail(email) {
+      return email is string &&
+        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    function isValidList(listData, maxSize) {
+      return listData is list && listData.size() <= maxSize;
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['uid', 'email', 'displayName', 'photoURL', 'role', 'createdAt']) &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
+             data.email is string && isValidEmail(data.email) && data.email.size() < 150 &&
+             isValidOptionalString('displayName', 0, 100) &&
+             isValidOptionalString('photoURL', 0, 500) &&
+             data.role in ['admin', 'user'] &&
+             data.createdAt is timestamp;
+    }
+    
+    function isValidOrganization(data) {
+      return hasOnlyAllowedFields(['name', 'slug', 'logo', 'description', 'createdAt', 'updatedAt']) &&
+             isValidString('name', 1, 150) &&
+             isValidString('slug', 1, 150) &&
+             isValidOptionalString('logo', 0, 500) &&
+             isValidOptionalString('description', 0, 2000) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
+    function isValidGame(data) {
+      return hasOnlyAllowedFields(['name', 'slug', 'parentGameId', 'description', 'logoLight', 'logoDark', 'coverImage', 'developer', 'createdAt', 'updatedAt']) &&
+             isValidString('name', 1, 100) &&
+             isValidString('slug', 1, 100) &&
+             isValidOptionalString('parentGameId', 0, 100) &&
+             isValidOptionalString('description', 0, 2000) &&
+             isValidOptionalString('logoLight', 0, 500) &&
+             isValidOptionalString('logoDark', 0, 500) &&
+             isValidOptionalString('coverImage', 0, 500) &&
+             isValidOptionalString('developer', 0, 100) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+    
+    function isValidSeries(data) {
+      return hasOnlyAllowedFields(['name', 'slug', 'gameId', 'description', 'logo', 'createdAt', 'updatedAt']) &&
+             isValidString('name', 1, 150) &&
+             isValidString('slug', 1, 150) &&
+             isValidString('gameId', 1, 100) &&
+             isValidOptionalString('description', 0, 2000) &&
+             isValidOptionalString('logo', 0, 500) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
+    function isValidTournament(data) {
+      return hasOnlyAllowedFields(['name', 'slug', 'seriesId', 'parentTournamentId', 'gameIds', 'status', 'tier', 'prizePool', 'region', 'startDate', 'endDate', 'coverImage', 'createdAt', 'updatedAt']) &&
+             isValidString('name', 1, 150) &&
+             isValidString('slug', 1, 150) &&
+             isValidOptionalString('seriesId', 0, 100) &&
+             isValidOptionalString('parentTournamentId', 0, 100) &&
+             isValidList(data.gameIds, 10) &&
+             data.status in ['upcoming', 'ongoing', 'completed'] &&
+             isValidOptionalString('tier', 0, 50) &&
+             isValidOptionalString('prizePool', 0, 100) &&
+             isValidOptionalString('region', 0, 100) &&
+             (!( 'startDate' in data ) || data.startDate is timestamp) &&
+             (!( 'endDate' in data ) || data.endDate is timestamp) &&
+             isValidOptionalString('coverImage', 0, 500) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+    
+    function isValidTeam(data) {
+      return hasOnlyAllowedFields(['organizationId', 'gameId', 'name', 'displayName', 'slug', 'logo', 'region', 'description', 'foundedYear', 'createdAt', 'updatedAt']) &&
+             isValidOptionalString('organizationId', 0, 100) &&
+             isValidString('gameId', 1, 100) &&
+             isValidString('name', 1, 100) &&
+             isValidString('displayName', 1, 100) &&
+             isValidString('slug', 1, 100) &&
+             isValidOptionalString('logo', 0, 500) &&
+             isValidOptionalString('region', 0, 100) &&
+             isValidOptionalString('description', 0, 2000) &&
+             (!( 'foundedYear' in data ) || data.foundedYear is number) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+    
+    function isValidPlayer(data) {
+      return hasOnlyAllowedFields(['handle', 'fullName', 'slug', 'teamId', 'gameId', 'role', 'country', 'avatar', 'createdAt', 'updatedAt']) &&
+             isValidString('handle', 1, 100) &&
+             isValidString('slug', 1, 150) &&
+             isValidOptionalString('fullName', 0, 150) &&
+             isValidOptionalString('teamId', 0, 100) &&
+             isValidOptionalString('gameId', 0, 100) &&
+             isValidOptionalString('role', 0, 100) &&
+             isValidOptionalString('country', 0, 100) &&
+             isValidOptionalString('avatar', 0, 500) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && 
+                    isOwner(userId) && 
+                    isValidUser(request.resource.data) && 
+                    request.resource.data.uid == userId &&
+                    (request.resource.data.role == 'user' || isAdmin());
+      allow update: if isAuthenticated() && 
+                    isValidUser(request.resource.data) && 
+                    (
+                      (isOwner(userId) && areImmutableFieldsUnchanged(['uid', 'role', 'createdAt'])) || 
+                      isAdmin()
+                    );
+      allow delete: if isAdmin();
+    }
+    
+    match /organizations/{orgId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidOrganization(request.resource.data);
+      allow update: if isAdmin() && isValidOrganization(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /games/{gameId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidGame(request.resource.data);
+      allow update: if isAdmin() && isValidGame(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAdmin();
+    }
+    
+    match /series/{seriesId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidSeries(request.resource.data);
+      allow update: if isAdmin() && isValidSeries(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /tournaments/{tournamentId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidTournament(request.resource.data);
+      allow update: if isAdmin() && isValidTournament(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAdmin();
+    }
+    
+    match /teams/{teamId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidTeam(request.resource.data);
+      allow update: if isAdmin() && isValidTeam(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAdmin();
+    }
+    
+    match /players/{playerId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidPlayer(request.resource.data);
+      allow update: if isAdmin() && isValidPlayer(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAdmin();
+    }
+  }
+}

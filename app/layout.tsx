@@ -6,6 +6,8 @@ import { Header } from '@/components/header';
 import Link from 'next/link';
 import Image from 'next/image';
 import { logoDefault, logoWhite } from '@/lib/logos';
+import { FirebaseProvider } from '@/components/firebase-provider';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
@@ -21,13 +23,35 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                const originalFetch = window.fetch;
+                Object.defineProperty(window, 'fetch', {
+                  configurable: true,
+                  enumerable: true,
+                  get: () => originalFetch,
+                  set: () => {}
+                });
+              }
+            `,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning className="min-h-screen bg-white font-sans text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-50">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div suppressHydrationWarning className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1 bg-white dark:bg-neutral-950">{children}</main>
-            
-            <footer className="border-t border-neutral-200 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-950/50">
+          <FirebaseProvider>
+            <div suppressHydrationWarning className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1 bg-white dark:bg-neutral-950">
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
+              </main>
+              
+              <footer className="border-t border-neutral-200 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-950/50">
               {/* Sub-footer Navigation */}
               <div className="w-full border-b border-neutral-200 dark:border-neutral-800">
                 <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-neutral-200 dark:divide-neutral-800">
@@ -74,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </footer>
           </div>
+          </FirebaseProvider>
         </ThemeProvider>
       </body>
     </html>
