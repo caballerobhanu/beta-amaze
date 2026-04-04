@@ -5,6 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
 import { Search } from "lucide-react";
+import logoDefault from "@/public/images/esportsamaze_long_default.png";
+import logoWhite from "@/public/images/esportsamaze_long_white.png";
 
 export function Header() {
   const pathname = usePathname();
@@ -18,18 +20,16 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-2">
               <div className="relative h-8 w-44">
                 <Image
-                  src="/images/esportsamaze_long_default.png"
+                  src={logoDefault}
                   alt="EsportsAmaze"
                   fill
-                  unoptimized
                   className="object-contain dark:hidden"
                   priority
                 />
                 <Image
-                  src="/images/esportsamaze_long_white.png"
+                  src={logoWhite}
                   alt="EsportsAmaze"
                   fill
-                  unoptimized
                   className="hidden object-contain dark:block"
                   priority
                 />

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { games } from "@/data/games";
 import { Search, TrendingUp, Clock, Calendar } from "lucide-react";
+import logoDefault from "@/public/images/esportsamaze_long_default.png";
 
 export default function Home() {
   return (
@@ -10,10 +11,9 @@ export default function Home() {
       <div className="flex w-full flex-col items-center justify-center space-y-12 pt-12 md:pt-24">
         <div className="relative h-16 w-64 md:h-20 md:w-80">
           <Image
-            src="/images/esportsamaze_long_default.png"
+            src={logoDefault}
             alt="EsportsAmaze"
             fill
-            unoptimized
             className="object-contain"
             priority
           />

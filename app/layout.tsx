@@ -5,6 +5,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import Link from 'next/link';
 import Image from 'next/image';
+import logoDefault from '@/public/images/esportsamaze_long_default.png';
+import logoWhite from '@/public/images/esportsamaze_long_white.png';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
@@ -49,19 +51,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="py-6">
                 <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 md:flex-row md:px-8">
                   <div className="flex items-center">
-                    <div className="relative h-6 w-32">
+                    <div className="relative h-8 w-44">
                       <Image
-                        src="/images/esportsamaze_long_default.png"
+                        src={logoDefault}
                         alt="EsportsAmaze"
                         fill
-                        unoptimized
                         className="object-contain dark:hidden"
                       />
                       <Image
-                        src="/images/esportsamaze_long_white.png"
+                        src={logoWhite}
                         alt="EsportsAmaze"
                         fill
-                        unoptimized
                         className="hidden object-contain dark:block"
                       />
                     </div>
