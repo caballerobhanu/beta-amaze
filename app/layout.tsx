@@ -5,8 +5,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import Link from 'next/link';
 import Image from 'next/image';
-import logoDefault from '@/public/images/esportsamaze_long_default.png';
-import logoWhite from '@/public/images/esportsamaze_long_white.png';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
@@ -26,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div suppressHydrationWarning className="relative flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 bg-white dark:bg-neutral-950">{children}</main>
             
             <footer className="border-t border-neutral-200 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-950/50">
               {/* Sub-footer Navigation */}
@@ -53,15 +51,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <div className="flex items-center">
                     <div className="relative h-8 w-44">
                       <Image
-                        src={logoDefault}
+                        src="/images/esportsamaze_long_default.png"
                         alt="EsportsAmaze"
                         fill
+                        unoptimized
                         className="object-contain dark:hidden"
                       />
                       <Image
-                        src={logoWhite}
+                        src="/images/esportsamaze_long_white.png"
                         alt="EsportsAmaze"
                         fill
+                        unoptimized
                         className="hidden object-contain dark:block"
                       />
                     </div>
