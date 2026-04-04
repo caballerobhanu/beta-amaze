@@ -1,34 +1,99 @@
 import Link from "next/link";
+import Image from "next/image";
 import { games } from "@/data/games";
+import { Search, TrendingUp, Clock, Calendar } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-12 md:px-8 lg:py-24">
-      <div className="mb-16 text-center">
-        <h1 className="font-display text-6xl font-black italic tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl">
-          <span className="text-neutral-900 dark:text-white">ENC</span>
-        </h1>
-        <p className="mt-6 text-sm font-bold tracking-[0.2em] text-neutral-800 dark:text-neutral-200 uppercase sm:text-base md:text-lg">
-          India will compete in 11 esports titles
-        </p>
+    <div className="container mx-auto flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-4 py-12 md:px-8 lg:py-24">
+      {/* Main Search Section (Google/Edge style) */}
+      <div className="flex w-full max-w-2xl flex-col items-center justify-center space-y-8 pt-12 md:pt-24">
+        <div className="relative h-16 w-64 md:h-20 md:w-80">
+          <Image
+            src="/images/esportsamaze_long_default.png"
+            alt="EsportsAmaze"
+            fill
+            className="object-contain dark:hidden"
+            priority
+          />
+          <Image
+            src="/images/esportsamaze_long_white.png"
+            alt="EsportsAmaze"
+            fill
+            className="hidden object-contain dark:block"
+            priority
+          />
+        </div>
+
+        <div className="relative w-full">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+            <Search className="h-5 w-5 text-neutral-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search esports titles, tournaments, teams..."
+            className="h-14 w-full rounded-full border border-neutral-200 bg-white pl-12 pr-4 text-base shadow-lg transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-neutral-800 dark:bg-neutral-900 dark:focus:border-blue-500"
+          />
+        </div>
+
+        {/* Top Visited Sections */}
+        <div className="grid w-full grid-cols-1 gap-4 pt-8 md:grid-cols-3">
+          <div className="flex flex-col space-y-3 rounded-2xl border border-neutral-100 bg-neutral-50/50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <TrendingUp className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">Top Overall</span>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <Link href="/games/pubg-mobile" className="text-sm font-medium hover:text-blue-600 transition-colors">PUBG Mobile India</Link>
+              <Link href="/games/valorant" className="text-sm font-medium hover:text-blue-600 transition-colors">Valorant Challengers</Link>
+            </div>
+          </div>
+
+          <div className="flex flex-col space-y-3 rounded-2xl border border-neutral-100 bg-neutral-50/50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <Calendar className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">Past Week</span>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <Link href="/tournaments/bgmi-masters" className="text-sm font-medium hover:text-blue-600 transition-colors">BGMI Masters Series</Link>
+              <Link href="/teams/godlike" className="text-sm font-medium hover:text-blue-600 transition-colors">GodLike Esports</Link>
+            </div>
+          </div>
+
+          <div className="flex flex-col space-y-3 rounded-2xl border border-neutral-100 bg-neutral-50/50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <Clock className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">Past 24 Hours</span>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <Link href="/players/mortal" className="text-sm font-medium hover:text-blue-600 transition-colors">Team Soul Roster</Link>
+              <Link href="/games/cs2" className="text-sm font-medium hover:text-blue-600 transition-colors">Skyesports Masters</Link>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:gap-8">
-        {games.map((game) => (
-          <Link
-            key={game.id}
-            href={`/games/${game.id}`}
-            className="group flex h-32 items-center justify-center rounded-2xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)] dark:bg-neutral-900 dark:shadow-[0_10px_40px_-10px_rgba(255,255,255,0.03)] dark:hover:shadow-[0_20px_40px_-10px_rgba(255,255,255,0.06)]"
-          >
-            <span className="font-display text-2xl font-black tracking-tight text-neutral-900 transition-colors group-hover:text-red-600 dark:text-white dark:group-hover:text-red-500">
-              {game.logoText}
-            </span>
-          </Link>
-        ))}
-      </div>
-      
-      <div className="mt-24 text-center">
-        <span className="font-display text-2xl font-bold tracking-tight text-red-600 dark:text-red-500">esportsamaze</span>
+      {/* Game Titles Section */}
+      <div className="mt-24 w-full">
+        <div className="mb-8 flex items-center justify-between">
+          <h2 className="font-display text-2xl font-bold tracking-tight">Browse Titles</h2>
+          <Link href="/games" className="text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400">View All</Link>
+        </div>
+        <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {games.slice(0, 12).map((game) => (
+            <Link
+              key={game.id}
+              href={`/games/${game.id}`}
+              className="group flex aspect-square flex-col items-center justify-center rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-blue-900"
+            >
+              <div className="flex h-full items-center justify-center text-center">
+                <span className="font-display text-sm font-black tracking-tight text-neutral-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+                  {game.logoText}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
