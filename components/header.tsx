@@ -58,6 +58,12 @@ export function Header() {
               </div>
             </Link>
           )}
+          
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link href="/games" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Games</Link>
+            <Link href="/tournaments" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Tournaments</Link>
+            <Link href="/teams" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Teams</Link>
+          </nav>
         </div>
 
         {!isHome && (

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { games } from "@/data/games";
 import { Search, TrendingUp, Clock, Calendar } from "lucide-react";
 import { logoDefault } from "@/lib/logos";
 

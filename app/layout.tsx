@@ -27,15 +27,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== 'undefined') {
-                const originalFetch = window.fetch;
-                Object.defineProperty(window, 'fetch', {
-                  configurable: true,
-                  enumerable: true,
-                  get: () => originalFetch,
-                  set: () => {}
-                });
-              }
+              (function() {
+                if (typeof window !== 'undefined') {
+                  const originalFetch = window.fetch;
+                  Object.defineProperty(window, 'fetch', {
+                    configurable: true,
+                    enumerable: true,
+                    get: function() { return originalFetch; },
+                    set: function() {}
+                  });
+                }
+              })();
             `,
           }}
         />
