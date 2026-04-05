@@ -23,25 +23,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                if (typeof window !== 'undefined') {
-                  const originalFetch = window.fetch;
-                  Object.defineProperty(window, 'fetch', {
-                    configurable: true,
-                    enumerable: true,
-                    get: function() { return originalFetch; },
-                    set: function() {}
-                  });
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
       <body suppressHydrationWarning className="min-h-screen bg-white font-sans text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-50">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <FirebaseProvider>
