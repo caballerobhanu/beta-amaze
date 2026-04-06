@@ -94,7 +94,6 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
               src={game.logoDark}
               alt={game.name}
               fill
-              unoptimized
               className="object-contain drop-shadow-md dark:hidden"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -106,7 +105,6 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
               src={game.logoLight}
               alt={game.name}
               fill
-              unoptimized
               className="hidden object-contain drop-shadow-md dark:block"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -155,7 +153,6 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
                       src={variant.logoDark}
                       alt={variant.name}
                       fill
-                      unoptimized
                       className="object-contain drop-shadow-md dark:hidden"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
@@ -168,7 +165,6 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
                       src={variant.logoLight}
                       alt={variant.name}
                       fill
-                      unoptimized
                       className="hidden object-contain drop-shadow-md dark:block"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';

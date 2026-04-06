@@ -90,7 +90,6 @@ export default function GamesPage() {
                     src={game.logoDark}
                     alt={game.name}
                     fill
-                    unoptimized
                     className="pointer-events-none object-contain drop-shadow-md dark:hidden"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -104,7 +103,6 @@ export default function GamesPage() {
                     src={game.logoLight}
                     alt={game.name}
                     fill
-                    unoptimized
                     className="pointer-events-none hidden object-contain drop-shadow-md dark:block"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
