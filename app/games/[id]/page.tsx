@@ -89,25 +89,25 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
       
       <div className="mb-12 flex flex-col md:flex-row md:items-center md:gap-8">
         <div className="relative mb-6 h-32 w-48 md:mb-0">
-          {game.logoLight && (
-            <Image
-              src={game.logoLight}
-              alt={game.name}
-              fill
-              unoptimized
-              className="object-contain dark:hidden"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
           {game.logoDark && (
             <Image
               src={game.logoDark}
               alt={game.name}
               fill
               unoptimized
-              className="hidden object-contain dark:block"
+              className="object-contain drop-shadow-md dark:hidden"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
+          {game.logoLight && (
+            <Image
+              src={game.logoLight}
+              alt={game.name}
+              fill
+              unoptimized
+              className="hidden object-contain drop-shadow-md dark:block"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}

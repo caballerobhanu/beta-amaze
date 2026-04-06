@@ -15,9 +15,6 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-displ
 export const metadata: Metadata = {
   title: 'EsportsAmaze | The Modern Esports Database',
   description: 'Beta Website covering multiple titles, tournaments, teams and players across Indian eSports.',
-  icons: {
-    icon: '/images/favicon.png',
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
