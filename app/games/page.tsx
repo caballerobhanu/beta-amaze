@@ -91,7 +91,11 @@ export default function GamesPage() {
                     alt={game.name}
                     fill
                     unoptimized
-                    className="object-contain drop-shadow-md dark:hidden"
+                    className="pointer-events-none object-contain drop-shadow-md dark:hidden"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement?.classList.add('image-failed');
+                    }}
                   />
                 )}
                 {/* Dark mode: Black background, Black logo (logoLight). */}
@@ -101,11 +105,18 @@ export default function GamesPage() {
                     alt={game.name}
                     fill
                     unoptimized
-                    className="hidden object-contain drop-shadow-md dark:block"
+                    className="pointer-events-none hidden object-contain drop-shadow-md dark:block"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement?.classList.add('image-failed');
+                    }}
                   />
                 )}
+                <span className="pointer-events-none font-display text-4xl font-black text-white drop-shadow-md dark:text-black absolute inset-0 flex items-center justify-center opacity-0 [.image-failed_&]:opacity-100 transition-opacity">
+                  {game.name.substring(0, 2).toUpperCase()}
+                </span>
                 {!game.logoLight && !game.logoDark && (
-                  <span className="font-display text-4xl font-black text-white drop-shadow-md dark:text-black">
+                  <span className="pointer-events-none font-display text-4xl font-black text-white drop-shadow-md dark:text-black absolute inset-0 flex items-center justify-center">
                     {game.name.substring(0, 2).toUpperCase()}
                   </span>
                 )}

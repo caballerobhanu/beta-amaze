@@ -36,32 +36,36 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-neutral-800 dark:bg-neutral-950/80 dark:supports-[backdrop-filter]:bg-neutral-950/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4 md:px-8">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="relative h-8 w-44">
-              <Image
-                src={logoDefault}
-                alt="EsportsAmaze"
-                fill
-                unoptimized
-                className="object-contain dark:hidden"
-                priority
-              />
-              <Image
-                src={logoWhite}
-                alt="EsportsAmaze"
-                fill
-                unoptimized
-                className="hidden object-contain dark:block"
-                priority
-              />
-            </div>
-          </Link>
-          
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link href="/games" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Games</Link>
-            <Link href="/tournaments" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Tournaments</Link>
-            <Link href="/teams" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Teams</Link>
-          </nav>
+          {!isHome && (
+            <>
+              <Link href="/" className="flex items-center space-x-2">
+                <div className="relative h-8 w-44">
+                  <Image
+                    src={logoDefault}
+                    alt="EsportsAmaze"
+                    fill
+                    unoptimized
+                    className="object-contain dark:hidden"
+                    priority
+                  />
+                  <Image
+                    src={logoWhite}
+                    alt="EsportsAmaze"
+                    fill
+                    unoptimized
+                    className="hidden object-contain dark:block"
+                    priority
+                  />
+                </div>
+              </Link>
+              
+              <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+                <Link href="/games" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Games</Link>
+                <Link href="/tournaments" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Tournaments</Link>
+                <Link href="/teams" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Teams</Link>
+              </nav>
+            </>
+          )}
         </div>
 
         {!isHome && (

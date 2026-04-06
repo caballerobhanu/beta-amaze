@@ -94,7 +94,11 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
               src={game.logoLight}
               alt={game.name}
               fill
+              unoptimized
               className="object-contain dark:hidden"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
             />
           )}
           {game.logoDark && (
@@ -102,7 +106,11 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
               src={game.logoDark}
               alt={game.name}
               fill
+              unoptimized
               className="hidden object-contain dark:block"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
             />
           )}
         </div>
@@ -147,7 +155,12 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
                       src={variant.logoDark}
                       alt={variant.name}
                       fill
+                      unoptimized
                       className="object-contain drop-shadow-md dark:hidden"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement?.classList.add('image-failed');
+                      }}
                     />
                   )}
                   {variant.logoLight && (
@@ -155,11 +168,19 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
                       src={variant.logoLight}
                       alt={variant.name}
                       fill
+                      unoptimized
                       className="hidden object-contain drop-shadow-md dark:block"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement?.classList.add('image-failed');
+                      }}
                     />
                   )}
+                  <span className="font-display text-2xl font-black text-white drop-shadow-md dark:text-black absolute inset-0 flex items-center justify-center opacity-0 [.image-failed_&]:opacity-100 transition-opacity">
+                    {variant.name.substring(0, 2).toUpperCase()}
+                  </span>
                   {!variant.logoLight && !variant.logoDark && (
-                    <span className="font-display text-2xl font-black text-white drop-shadow-md dark:text-black">
+                    <span className="font-display text-2xl font-black text-white drop-shadow-md dark:text-black absolute inset-0 flex items-center justify-center">
                       {variant.name.substring(0, 2).toUpperCase()}
                     </span>
                   )}
