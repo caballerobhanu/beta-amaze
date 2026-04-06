@@ -81,7 +81,7 @@ export default function GamesPage() {
               className="group relative flex aspect-[4/3] flex-col items-center justify-center overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-red-500/10 dark:border-neutral-800 dark:bg-black dark:hover:shadow-red-500/20"
             >
               {/* Background glow effect on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-10 dark:from-red-500/20"></div>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-10 dark:from-red-500/20"></div>
               
               <div className="relative flex h-20 w-full flex-1 items-center justify-center transition-transform duration-500 group-hover:scale-110">
                 {/* Light mode: White background, White logo (logoDark). Drop shadow makes it flushed/embossed. */}
@@ -90,6 +90,7 @@ export default function GamesPage() {
                     src={game.logoDark}
                     alt={game.name}
                     fill
+                    unoptimized
                     className="object-contain drop-shadow-md dark:hidden"
                   />
                 )}
@@ -99,6 +100,7 @@ export default function GamesPage() {
                     src={game.logoLight}
                     alt={game.name}
                     fill
+                    unoptimized
                     className="hidden object-contain drop-shadow-md dark:block"
                   />
                 )}

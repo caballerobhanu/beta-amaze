@@ -43,7 +43,7 @@ export default function Home() {
               <Link href="/games/cs2" className="text-sm font-medium hover:text-blue-600 transition-colors">Skyesports Masters Day 1</Link>
               <Link href="/tournaments/bgmi-pro" className="text-sm font-medium hover:text-blue-600 transition-colors">BGMI Pro Series Live</Link>
               <Link href="/teams/godlike" className="text-sm font-medium hover:text-blue-600 transition-colors">GodLike New Signing</Link>
-              <Link href="/games/valorant" className="text-sm font-medium hover:text-blue-600 transition-colors">VCL South Asia Results</Link>
+              <Link href="/games/valo" className="text-sm font-medium hover:text-blue-600 transition-colors">VCL South Asia Results</Link>
               <Link href="/players/scout" className="text-sm font-medium hover:text-blue-600 transition-colors hidden md:block">ScoutOP Interview</Link>
               <Link href="/tournaments/pmgc" className="text-sm font-medium hover:text-blue-600 transition-colors hidden md:block">PMGC 2024 Schedule</Link>
             </div>
@@ -58,7 +58,7 @@ export default function Home() {
             <div className="flex flex-col space-y-2.5">
               <Link href="/tournaments/bgmi-masters" className="text-sm font-medium hover:text-blue-600 transition-colors">BGMI Masters Series Finals</Link>
               <Link href="/teams/godlike" className="text-sm font-medium hover:text-blue-600 transition-colors">GodLike Esports Bootcamp</Link>
-              <Link href="/games/pubg-mobile" className="text-sm font-medium hover:text-blue-600 transition-colors">PUBG Mobile India Launch</Link>
+              <Link href="/games/pubgm" className="text-sm font-medium hover:text-blue-600 transition-colors">PUBG Mobile India Launch</Link>
               <Link href="/players/jonathan" className="text-sm font-medium hover:text-blue-600 transition-colors">Jonathan MVP Performance</Link>
               <Link href="/tournaments/valorant-india" className="text-sm font-medium hover:text-blue-600 transition-colors">Valorant India Cup</Link>
               <Link href="/teams/soul" className="text-sm font-medium hover:text-blue-600 transition-colors hidden md:block">Team Soul Expansion</Link>
@@ -73,8 +73,8 @@ export default function Home() {
               <span className="text-xs font-bold uppercase tracking-wider">Overall</span>
             </div>
             <div className="flex flex-col space-y-2.5">
-              <Link href="/games/pubg-mobile" className="text-sm font-medium hover:text-blue-600 transition-colors">PUBG Mobile India Hub</Link>
-              <Link href="/games/valorant" className="text-sm font-medium hover:text-blue-600 transition-colors">Valorant South Asia Hub</Link>
+              <Link href="/games/pubgm" className="text-sm font-medium hover:text-blue-600 transition-colors">PUBG Mobile India Hub</Link>
+              <Link href="/games/valo" className="text-sm font-medium hover:text-blue-600 transition-colors">Valorant South Asia Hub</Link>
               <Link href="/teams/soul" className="text-sm font-medium hover:text-blue-600 transition-colors">Team Soul History</Link>
               <Link href="/teams/godlike" className="text-sm font-medium hover:text-blue-600 transition-colors">GodLike Esports Profile</Link>
               <Link href="/players/mortal" className="text-sm font-medium hover:text-blue-600 transition-colors">Mortal Profile & Stats</Link>
