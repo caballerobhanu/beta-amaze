@@ -22,7 +22,7 @@ export default function MigrateImagesPage() {
     }
 
     setLoading(true);
-    setLogs(["Starting image migration to Firebase Storage..."]);
+    setLogs(["Starting bulk image migration to Firebase Storage..."]);
 
     try {
       const gamesSnap = await getDocs(collection(db, "games"));
@@ -33,56 +33,44 @@ export default function MigrateImagesPage() {
       for (const game of games) {
         const updates: any = {};
         
-        // Process logoLight
-        if (game.logoLight && game.logoLight.startsWith('/images/')) {
-          try {
-            addLog(`[${game.id}] Fetching ${game.logoLight}...`);
-            const response = await fetch(game.logoLight);
-            if (!response.ok) throw new Error(`Failed to fetch ${game.logoLight}`);
-            const blob = await response.blob();
-            
-            const storageRef = ref(storage, `games/${game.id}_light.png`);
-            addLog(`[${game.id}] Uploading to Firebase Storage...`);
-            await uploadBytes(storageRef, blob);
-            
-            const downloadUrl = await getDownloadURL(storageRef);
-            updates.logoLight = downloadUrl;
-            addLog(`[${game.id}] Successfully uploaded logoLight.`);
-          } catch (e: any) {
-            addLog(`[${game.id}] Error with logoLight: ${e.message}`);
+        // Helper function to process image
+        const processImage = async (imageUrl: string, suffix: string) => {
+          if (imageUrl && (imageUrl.startsWith('/images/') || imageUrl.startsWith('data:image/'))) {
+            try {
+              addLog(`[${game.id}] Processing ${suffix} logo...`);
+              const response = await fetch(imageUrl);
+              const blob = await response.blob();
+              
+              const storageRef = ref(storage, `games/${game.id}_${suffix}.png`);
+              addLog(`[${game.id}] Uploading to Firebase Storage...`);
+              await uploadBytes(storageRef, blob);
+              
+              const downloadUrl = await getDownloadURL(storageRef);
+              return downloadUrl;
+            } catch (e: any) {
+              addLog(`[${game.id}] Error with ${suffix}: ${e.message}`);
+              return null;
+            }
           }
-        }
+          return null;
+        };
 
-        // Process logoDark
-        if (game.logoDark && game.logoDark.startsWith('/images/')) {
-          try {
-            addLog(`[${game.id}] Fetching ${game.logoDark}...`);
-            const response = await fetch(game.logoDark);
-            if (!response.ok) throw new Error(`Failed to fetch ${game.logoDark}`);
-            const blob = await response.blob();
-            
-            const storageRef = ref(storage, `games/${game.id}_dark.png`);
-            addLog(`[${game.id}] Uploading to Firebase Storage...`);
-            await uploadBytes(storageRef, blob);
-            
-            const downloadUrl = await getDownloadURL(storageRef);
-            updates.logoDark = downloadUrl;
-            addLog(`[${game.id}] Successfully uploaded logoDark.`);
-          } catch (e: any) {
-            addLog(`[${game.id}] Error with logoDark: ${e.message}`);
-          }
-        }
+        const lightUrl = await processImage(game.logoLight, 'light');
+        if (lightUrl) updates.logoLight = lightUrl;
+
+        const darkUrl = await processImage(game.logoDark, 'dark');
+        if (darkUrl) updates.logoDark = darkUrl;
 
         if (Object.keys(updates).length > 0) {
           addLog(`[${game.id}] Updating Firestore document...`);
           await updateDoc(doc(db, "games", game.id), updates);
           addLog(`[${game.id}] Document updated.`);
         } else {
-          addLog(`[${game.id}] No local images to migrate.`);
+          addLog(`[${game.id}] No local/base64 images to migrate.`);
         }
       }
 
-      addLog("Migration complete!");
+      addLog("Migration complete! All images are now in Firebase Storage.");
     } catch (error: any) {
       addLog(`Fatal Error: ${error.message}`);
     } finally {
@@ -94,9 +82,9 @@ export default function MigrateImagesPage() {
 
   return (
     <div className="container mx-auto max-w-3xl p-8">
-      <h1 className="mb-6 text-2xl font-bold">Admin: Migrate Images to Firebase Storage</h1>
+      <h1 className="mb-6 text-2xl font-bold">Admin: Bulk Migrate to Firebase Storage</h1>
       <p className="mb-8 text-neutral-600 dark:text-neutral-400">
-        This tool will download the local images (from /public/images/...) currently used by the games in the database, upload them to Firebase Storage, and update the database with the new secure, fast CDN URLs.
+        Now that Firebase Storage is initialized, this tool will automatically grab all the Base64/local images currently in your database, upload them to your Firebase Storage bucket, and update the database with the new fast CDN URLs. You only need to click this once!
       </p>
 
       {!user ? (
@@ -110,7 +98,7 @@ export default function MigrateImagesPage() {
             disabled={loading}
             className="rounded-full bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            {loading ? "Migrating..." : "Start Migration"}
+            {loading ? "Migrating..." : "Start Bulk Migration"}
           </button>
           
           <div className="rounded-lg bg-neutral-950 p-4 font-mono text-sm text-green-400 h-96 overflow-y-auto">
