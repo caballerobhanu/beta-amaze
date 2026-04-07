@@ -1,19 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/components/firebase-provider";
 import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 import { ImageUpload } from "@/components/image-upload";
 
-export default function NewTeamPage() {
+export default function EditTeamPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { user, isAuthReady } = useAuth();
   const router = useRouter();
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
@@ -29,12 +31,36 @@ export default function NewTeamPage() {
   });
 
   useEffect(() => {
-    const fetchGames = async () => {
-      const snap = await getDocs(collection(db, "games"));
-      setGames(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const fetchGamesAndTeam = async () => {
+      try {
+        const gamesSnap = await getDocs(collection(db, "games"));
+        setGames(gamesSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+
+        const teamSnap = await getDoc(doc(db, "teams", id));
+        if (teamSnap.exists()) {
+          const data = teamSnap.data();
+          setFormData({
+            name: data.name || "",
+            displayName: data.displayName || "",
+            slug: data.slug || "",
+            shortCode: data.shortCode || "",
+            gameId: data.gameId || "",
+            country: data.country || "",
+            status: data.status || "active",
+            logoLight: data.logoLight || "",
+            logoDark: data.logoDark || "",
+          });
+        } else {
+          setError("Team not found.");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setFetching(false);
+      }
     };
-    fetchGames();
-  }, []);
+    fetchGamesAndTeam();
+  }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,18 +79,17 @@ export default function NewTeamPage() {
     try {
       const docData = {
         ...formData,
-        createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
       
-      // Clean up empty strings to avoid validation errors if they aren't required
+      // Clean up empty strings
       Object.keys(docData).forEach(key => {
         if ((docData as any)[key] === "") {
           delete (docData as any)[key];
         }
       });
 
-      await addDoc(collection(db, "teams"), docData);
+      await updateDoc(doc(db, "teams", id), docData);
       router.push("/admin/teams");
     } catch (err: any) {
       setError(err.message);
@@ -72,8 +97,8 @@ export default function NewTeamPage() {
     }
   };
 
-  if (!isAuthReady) return <div>Loading...</div>;
-  if (!user) return <div>Access Denied</div>;
+  if (!isAuthReady || fetching) return <div className="p-8">Loading...</div>;
+  if (!user) return <div className="p-8">Access Denied</div>;
 
   return (
     <div className="max-w-4xl">
@@ -83,8 +108,8 @@ export default function NewTeamPage() {
       </Link>
 
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold tracking-tight">Create New Team</h1>
-        <p className="text-neutral-600 dark:text-neutral-400">Add a new team to the database.</p>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Edit Team</h1>
+        <p className="text-neutral-600 dark:text-neutral-400">Update team information.</p>
       </div>
 
       {error && (
@@ -164,7 +189,7 @@ export default function NewTeamPage() {
             className="flex items-center gap-2 rounded-full bg-red-600 px-8 py-3 font-bold text-white transition-colors hover:bg-red-700 disabled:opacity-50 dark:bg-red-500 dark:hover:bg-red-600"
           >
             <Save className="h-5 w-5" />
-            {loading ? "Saving..." : "Save Team"}
+            {loading ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>

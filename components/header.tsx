@@ -63,6 +63,7 @@ export function Header() {
                 <Link href="/games" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Games</Link>
                 <Link href="/tournaments" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Tournaments</Link>
                 <Link href="/teams" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Teams</Link>
+                <Link href="/players" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Players</Link>
               </nav>
             </>
           )}
