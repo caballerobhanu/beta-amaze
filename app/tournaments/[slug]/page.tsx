@@ -20,7 +20,7 @@ export default function TournamentDetailPage({ params }: { params: Promise<{ slu
         const snap = await getDocs(q);
         
         if (!snap.empty) {
-          const data = { id: snap.docs[0].id, ...snap.docs[0].data() };
+          const data: any = { id: snap.docs[0].id, ...snap.docs[0].data() };
           setTournament(data);
 
           if (data.gameId) {

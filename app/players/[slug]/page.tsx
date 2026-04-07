@@ -21,7 +21,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ slug: s
         const snap = await getDocs(q);
         
         if (!snap.empty) {
-          const data = { id: snap.docs[0].id, ...snap.docs[0].data() };
+          const data: any = { id: snap.docs[0].id, ...snap.docs[0].data() };
           setPlayer(data);
 
           // Fetch Game

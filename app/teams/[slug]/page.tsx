@@ -20,7 +20,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ slug: str
         const snap = await getDocs(q);
         
         if (!snap.empty) {
-          const teamData = { id: snap.docs[0].id, ...snap.docs[0].data() };
+          const teamData: any = { id: snap.docs[0].id, ...snap.docs[0].data() };
           setTeam(teamData);
 
           if (teamData.gameId) {
