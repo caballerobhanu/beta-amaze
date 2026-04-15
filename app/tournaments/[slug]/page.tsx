@@ -3,14 +3,15 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { ArrowLeft, Calendar, MapPin, Trophy, Users, MonitorPlay } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Trophy, Users, MonitorPlay, Building2, Briefcase } from "lucide-react";
 
 export default function TournamentDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const [tournament, setTournament] = useState<any>(null);
   const [game, setGame] = useState<any>(null);
+  const [parentTournament, setParentTournament] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,6 +29,13 @@ export default function TournamentDetailPage({ params }: { params: Promise<{ slu
             const gameSnap = await getDocs(gameQ);
             if (!gameSnap.empty) {
               setGame({ id: gameSnap.docs[0].id, ...gameSnap.docs[0].data() });
+            }
+          }
+
+          if (data.parentTournamentId) {
+            const parentSnap = await getDoc(doc(db, "tournaments", data.parentTournamentId));
+            if (parentSnap.exists()) {
+              setParentTournament({ id: parentSnap.id, ...parentSnap.data() });
             }
           }
         }
@@ -63,9 +71,17 @@ export default function TournamentDetailPage({ params }: { params: Promise<{ slu
           
           <div className="absolute bottom-0 left-0 flex w-full flex-col items-start p-8 md:flex-row md:items-end md:justify-between">
             <div className="flex items-end gap-6">
-              {tournament.thumbnail && (
+              {(tournament.thumbnailLight || tournament.thumbnailDark) && (
                 <div className="relative hidden h-32 w-32 overflow-hidden rounded-xl border-4 border-white bg-white shadow-xl dark:border-neutral-900 dark:bg-neutral-950 md:block">
-                  <Image src={tournament.thumbnail} alt={tournament.name} fill className="object-contain p-2" unoptimized />
+                  {tournament.thumbnailLight && (
+                    <Image src={tournament.thumbnailLight} alt={tournament.name} fill className="object-contain p-2 dark:hidden" unoptimized />
+                  )}
+                  {tournament.thumbnailDark && (
+                    <Image src={tournament.thumbnailDark} alt={tournament.name} fill className="hidden object-contain p-2 dark:block" unoptimized />
+                  )}
+                  {!tournament.thumbnailDark && tournament.thumbnailLight && (
+                    <Image src={tournament.thumbnailLight} alt={tournament.name} fill className="hidden object-contain p-2 dark:block" unoptimized />
+                  )}
                 </div>
               )}
               <div>
@@ -82,7 +98,15 @@ export default function TournamentDetailPage({ params }: { params: Promise<{ slu
                   </span>
                 </div>
                 <h1 className="font-display text-3xl font-bold text-white md:text-5xl">{tournament.name}</h1>
-                {game && <p className="mt-2 font-medium text-neutral-300">{game.name}</p>}
+                <div className="mt-2 flex items-center gap-4 text-sm font-medium text-neutral-300">
+                  {game && <span>{game.name}</span>}
+                  {tournament.series && (
+                    <>
+                      <span className="h-1 w-1 rounded-full bg-neutral-500" />
+                      <span>{tournament.series}</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -95,20 +119,33 @@ export default function TournamentDetailPage({ params }: { params: Promise<{ slu
             <h3 className="mb-6 font-display text-lg font-bold">Tournament Details</h3>
             
             <div className="space-y-6">
-              {tournament.prizePool && (
+              {parentTournament && (
+                <div>
+                  <p className="text-xs font-bold uppercase text-neutral-500">Part of</p>
+                  <Link href={`/tournaments/${parentTournament.slug}`} className="mt-1 font-medium text-blue-600 hover:underline dark:text-blue-400">
+                    {parentTournament.name}
+                  </Link>
+                </div>
+              )}
+
+              {tournament.prizePools && tournament.prizePools.length > 0 && (
                 <div>
                   <p className="text-xs font-bold uppercase text-neutral-500">Prize Pool</p>
-                  <p className="flex items-center gap-2 font-medium text-green-600 dark:text-green-400">
-                    <Trophy className="h-4 w-4" />
-                    {tournament.prizePool}
-                  </p>
+                  <div className="mt-1 space-y-1">
+                    {tournament.prizePools.map((pool: any, idx: number) => (
+                      <p key={idx} className="flex items-center gap-2 font-medium text-green-600 dark:text-green-400">
+                        <Trophy className="h-4 w-4" />
+                        {pool.currency} {pool.amount}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               )}
               
               {(tournament.startDate || tournament.endDate) && (
                 <div>
                   <p className="text-xs font-bold uppercase text-neutral-500">Dates</p>
-                  <p className="flex items-center gap-2 font-medium">
+                  <p className="mt-1 flex items-center gap-2 font-medium">
                     <Calendar className="h-4 w-4 text-neutral-400" />
                     {tournament.startDate ? new Date(tournament.startDate).toLocaleDateString() : 'TBD'} 
                     {tournament.endDate ? ` - ${new Date(tournament.endDate).toLocaleDateString()}` : ''}
@@ -116,23 +153,71 @@ export default function TournamentDetailPage({ params }: { params: Promise<{ slu
                 </div>
               )}
 
-              {tournament.location && (
+              {tournament.locations && tournament.locations.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold uppercase text-neutral-500">Location</p>
-                  <p className="flex items-center gap-2 font-medium">
-                    <MapPin className="h-4 w-4 text-neutral-400" />
-                    {tournament.location}
-                  </p>
+                  <p className="text-xs font-bold uppercase text-neutral-500">Locations</p>
+                  <div className="mt-1 space-y-2">
+                    {tournament.locations.map((loc: any, idx: number) => (
+                      <p key={idx} className="flex items-start gap-2 font-medium">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400" />
+                        <span>
+                          {loc.label && <span className="text-neutral-500">{loc.label}: </span>}
+                          {loc.venue}
+                        </span>
+                      </p>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {tournament.eventType && (
                 <div>
                   <p className="text-xs font-bold uppercase text-neutral-500">Format</p>
-                  <p className="flex items-center gap-2 font-medium">
+                  <p className="mt-1 flex items-center gap-2 font-medium">
                     <MonitorPlay className="h-4 w-4 text-neutral-400" />
                     {tournament.eventType}
                   </p>
+                </div>
+              )}
+
+              {tournament.organizers && tournament.organizers.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold uppercase text-neutral-500">Organizers</p>
+                  <div className="mt-1 space-y-1">
+                    {tournament.organizers.map((org: string, idx: number) => (
+                      <p key={idx} className="flex items-center gap-2 font-medium">
+                        <Building2 className="h-4 w-4 text-neutral-400" />
+                        {org}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {tournament.publishers && tournament.publishers.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold uppercase text-neutral-500">Publishers</p>
+                  <div className="mt-1 space-y-1">
+                    {tournament.publishers.map((pub: string, idx: number) => (
+                      <p key={idx} className="flex items-center gap-2 font-medium">
+                        <Briefcase className="h-4 w-4 text-neutral-400" />
+                        {pub}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {tournament.sponsors && tournament.sponsors.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold uppercase text-neutral-500">Sponsors</p>
+                  <div className="mt-1 flex flex-wrap gap-2">
+                    {tournament.sponsors.map((sponsor: string, idx: number) => (
+                      <span key={idx} className="rounded-md bg-neutral-200 px-2 py-1 text-xs font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                        {sponsor}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

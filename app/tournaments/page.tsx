@@ -70,16 +70,16 @@ export default function TournamentsPage() {
                       <span>{new Date(tournament.startDate).toLocaleDateString()}</span>
                     </div>
                   )}
-                  {tournament.location && (
+                  {tournament.locations && tournament.locations.length > 0 && (
                     <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
                       <MapPin className="h-4 w-4" />
-                      <span>{tournament.location} ({tournament.eventType})</span>
+                      <span className="truncate">{tournament.locations.map((l: any) => l.venue).join(", ")}</span>
                     </div>
                   )}
-                  {tournament.prizePool && (
+                  {tournament.prizePools && tournament.prizePools.length > 0 && (
                     <div className="flex items-center gap-2 text-sm font-medium text-green-600 dark:text-green-400">
                       <Trophy className="h-4 w-4" />
-                      <span>{tournament.prizePool}</span>
+                      <span>{tournament.prizePools.map((p: any) => `${p.currency} ${p.amount}`).join(" / ")}</span>
                     </div>
                   )}
                 </div>
